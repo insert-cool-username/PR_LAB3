@@ -37,7 +37,7 @@ class PF_3DOF_MBL(PFMBL):
         # **To be completed by the student**.
         pass
     
-    def Motion_model(self, particle, u, noise):
+    def MotionModel(self, particle, u, noise):
         # **To be completed by the student**.
         pass
     

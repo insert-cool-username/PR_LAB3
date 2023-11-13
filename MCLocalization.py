@@ -27,8 +27,8 @@ class MCLocalization(ParticleFilter):
     def Prediction(self, u, Q):
         """
         Prediction overriden from :class:`ParticleFilter`.
-        Note: Use the Motion_model method from :class:`ParticleFilter` to update the particles to keep it generic. Then,
-        child classes can overwrite the Motion_model method to implement their own motion model.
+        Note: Use the MotionModel method from :class:`ParticleFilter` to update the particles to keep it generic. Then,
+        child classes can overwrite the MotionModel method to implement their own motion model.
         """
         # **To be completed by the student**.
 
