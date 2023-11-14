@@ -10,9 +10,6 @@
 %% let collapsible pdf bookmarks panel have high depth per default
 \PassOptionsToPackage{bookmarksdepth=5}{hyperref}
 
-\PassOptionsToPackage{booktabs}{sphinx}
-\PassOptionsToPackage{colorrows}{sphinx}
-
 \PassOptionsToPackage{warn}{textcomp}
 \usepackage[utf8]{inputenc}
 \ifdefined\DeclareUnicodeCharacter
@@ -63,18 +60,13 @@
 
 
 \title{prpy: Probabilistic Robot Localization Python Library}
-\date{Oct 02, 2023}
+\date{Nov 14, 2023}
 \release{0.1}
 \author{Pere Ridao}
 \newcommand{\sphinxlogo}{\vbox{}}
 \renewcommand{\releasename}{Release}
 \makeindex
 \begin{document}
-
-\ifdefined\shorthandoff
-  \ifnum\catcode`\=\string=\active\shorthandoff{=}\fi
-  \ifnum\catcode`\"=\active\shorthandoff{"}\fi
-\fi
 
 \pagestyle{empty}
 \sphinxmaketitle
@@ -95,8 +87,6 @@ This documentation is still under construction.
 
 \chapter{API:}
 \label{\detokenize{index:api}}
-\sphinxstepscope
-
 
 \section{Pose Representation}
 \label{\detokenize{compounding:pose-representation}}\label{\detokenize{compounding::doc}}
@@ -111,12 +101,9 @@ This documentation is still under construction.
 \index{Pose3D (class in Pose3D)@\spxentry{Pose3D}\spxextra{class in Pose3D}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{compounding:Pose3D.Pose3D}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{Pose3D.}}\sphinxbfcode{\sphinxupquote{Pose3D}}}{\sphinxparam{\DUrole{n}{input\_array}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{compounding:Pose3D.Pose3D}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{Pose3D.}}\sphinxbfcode{\sphinxupquote{Pose3D}}}{\emph{\DUrole{n}{input\_array}}}{}
 \sphinxAtStartPar
-Bases: \sphinxcode{\sphinxupquote{ndarray}}
+Bases: \sphinxcode{\sphinxupquote{numpy.ndarray}}
 
 \sphinxAtStartPar
 Definition of a robot pose in 3 DOF (x, y, yaw). The class inherits from a ndarray.
@@ -124,10 +111,7 @@ This class extends the ndarray with the \$oplus\$ and \$ominus\$ operators and t
 \index{oplus() (Pose3D.Pose3D method)@\spxentry{oplus()}\spxextra{Pose3D.Pose3D method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{compounding:Pose3D.Pose3D.oplus}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{oplus}}}{\sphinxparam{\DUrole{n}{BxC}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{compounding:Pose3D.Pose3D.oplus}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{oplus}}}{\emph{\DUrole{n}{BxC}}}{}
 \sphinxAtStartPar
 Given a Pose3D object \sphinxstyleemphasis{AxB} (the self object) and a Pose3D object \sphinxstyleemphasis{BxC}, it returns the Pose3D object \sphinxstyleemphasis{AxC}.
 \begin{equation*}
@@ -144,73 +128,13 @@ The operation is defined as:
     ^A\psi_B + ^B\psi_C
 \end{bmatrix}\end{split}
 \end{equation}\begin{quote}\begin{description}
-\sphinxlineitem{Parameters}
+\item[{Parameters}] \leavevmode
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{BxC}} \textendash{} C\sphinxhyphen{}Frame pose expressed in B\sphinxhyphen{}Frame coordinates
 
-\sphinxlineitem{Returns}
+\item[{Returns}] \leavevmode
 \sphinxAtStartPar
 C\sphinxhyphen{}Frame pose expressed in A\sphinxhyphen{}Frame coordinates
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{J\_1oplus() (Pose3D.Pose3D method)@\spxentry{J\_1oplus()}\spxextra{Pose3D.Pose3D method}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{compounding:Pose3D.Pose3D.J_1oplus}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{J\_1oplus}}}{\sphinxparam{\DUrole{n}{BxC}}}{}
-\pysigstopsignatures
-\sphinxAtStartPar
-Jacobian of the pose compounding operation (eq. \eqref{equation:compounding:eq-oplus3dof}) with respect to the first pose:
-\begin{equation}\label{equation:compounding:eq-J1oplus3dof}
-\begin{split}J_{1\oplus}=\frac{\partial  ^Ax_B \oplus ^Bx_C}{\partial ^Ax_B} =
-\begin{bmatrix}
-    1 & 0 &  -^Bx_C \sin(^A\psi_B) - ^By_C \cos(^A\psi_B) \\
-    0 & 1 &  ^Bx_C \cos(^A\psi_B) - ^By_C \sin(^A\psi_B) \\
-    0 & 0 & 1
-\end{bmatrix}\end{split}
-\end{equation}
-\sphinxAtStartPar
-The method returns a numerical matrix containing the evaluation of the Jacobian for the pose \sphinxstyleemphasis{AxB} (the self object) and the \$2\textasciicircum{}\{nd\}\$ posepose \sphinxstyleemphasis{BxC}.
-\begin{quote}\begin{description}
-\sphinxlineitem{Parameters}
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{BxC}} \textendash{} 2nd pose
-
-\sphinxlineitem{Returns}
-\sphinxAtStartPar
-Evaluation of the \(J_{1\oplus}\) Jacobian of the pose compounding operation with respect to the first pose (eq. \eqref{equation:compounding:eq-J1oplus3dof})
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{J\_2oplus() (Pose3D.Pose3D method)@\spxentry{J\_2oplus()}\spxextra{Pose3D.Pose3D method}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{compounding:Pose3D.Pose3D.J_2oplus}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{J\_2oplus}}}{}{}
-\pysigstopsignatures
-\sphinxAtStartPar
-Jacobian of the pose compounding operation (\eqref{equation:compounding:eq-oplus3dof}) with respect to the second pose:
-\begin{equation}\label{equation:compounding:eq-J2oplus3dof}
-\begin{split}J_{2\oplus}=\frac{\partial  ^Ax_B \oplus ^Bx_C}{\partial ^Bx_C} =
-\begin{bmatrix}
-    \cos(^A\psi_B) & -\sin(^A\psi_B) & 0  \\
-    \sin(^A\psi_B) & \cos(^A\psi_B) & 0  \\
-    0 & 0 & 1
-\end{bmatrix}\end{split}
-\end{equation}
-\sphinxAtStartPar
-The method returns a numerical matrix containing the evaluation of the Jacobian for the \$1\textasciicircum{}\{st\}\$ posepose \sphinxstyleemphasis{AxB} (the self object).
-\begin{quote}\begin{description}
-\sphinxlineitem{Returns}
-\sphinxAtStartPar
-Evaluation of the \(J_{2\oplus}\) Jacobian of the pose compounding operation with respect to the second pose (eq. \eqref{equation:compounding:eq-J2oplus3dof})
 
 \end{description}\end{quote}
 
@@ -219,10 +143,7 @@ Evaluation of the \(J_{2\oplus}\) Jacobian of the pose compounding operation wit
 \index{ominus() (Pose3D.Pose3D method)@\spxentry{ominus()}\spxextra{Pose3D.Pose3D method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{compounding:Pose3D.Pose3D.ominus}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{ominus}}}{}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{compounding:Pose3D.Pose3D.ominus}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{ominus}}}{}{}
 \sphinxAtStartPar
 Inverse pose compounding of the \sphinxstyleemphasis{AxB} pose (the self objetc):
 \begin{equation}\label{equation:compounding:eq-ominus3dof}
@@ -233,7 +154,7 @@ Inverse pose compounding of the \sphinxstyleemphasis{AxB} pose (the self objetc)
     -^A\psi_B
 \end{bmatrix}\end{split}
 \end{equation}\begin{quote}\begin{description}
-\sphinxlineitem{Returns}
+\item[{Returns}] \leavevmode
 \sphinxAtStartPar
 A\sphinxhyphen{}Frame pose expressed in B\sphinxhyphen{}Frame coordinates (eq. \eqref{equation:compounding:eq-ominus3dof})
 
@@ -241,39 +162,9 @@ A\sphinxhyphen{}Frame pose expressed in B\sphinxhyphen{}Frame coordinates (eq. \
 
 \end{fulllineitems}
 
-\index{J\_ominus() (Pose3D.Pose3D method)@\spxentry{J\_ominus()}\spxextra{Pose3D.Pose3D method}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{compounding:Pose3D.Pose3D.J_ominus}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{J\_ominus}}}{}{}
-\pysigstopsignatures
-\sphinxAtStartPar
-Jacobian of the inverse pose compounding operation (\eqref{equation:compounding:eq-oplus3dof}) with respect the pose \sphinxstyleemphasis{AxB} (the self object):
-\begin{equation}\label{equation:compounding:eq-Jominus3dof}
-\begin{split}J_{\ominus}=\frac{\partial  \ominus ^Ax_B}{\partial ^Ax_B} =
-\begin{bmatrix}
-    -\cos(^A\psi_B) & -\sin(^A\psi_B) &  ^Ax_B \sin(^A\psi_B) - ^Ay_B \cos(^A\psi_B) \\
-    \sin(^A\psi_B) & -\cos(^A\psi_B) &  ^Ax_B \cos(^A\psi_B) + ^Ay_B \sin(^A\psi_B) \\
-    0 & 0 & -1
-\end{bmatrix}\end{split}
-\end{equation}
-\sphinxAtStartPar
-Returns the numerical matrix containing the evaluation of the Jacobian for the pose \sphinxstyleemphasis{AxB} (the self object).
-\begin{quote}\begin{description}
-\sphinxlineitem{Returns}
-\sphinxAtStartPar
-Evaluation of the \(J_{\ominus}\) Jacobian of the inverse pose compounding operation with respect to the pose (eq. \eqref{equation:compounding:eq-Jominus3dof})
-
-\end{description}\end{quote}
 
 \end{fulllineitems}
 
-
-\end{fulllineitems}
-
-
-\sphinxstepscope
 
 
 \section{Robot Simulation}
@@ -287,10 +178,7 @@ Evaluation of the \(J_{\ominus}\) Jacobian of the inverse pose compounding opera
 \index{SimulatedRobot (class in SimulatedRobot)@\spxentry{SimulatedRobot}\spxextra{class in SimulatedRobot}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{SimulatedRobot.}}\sphinxbfcode{\sphinxupquote{SimulatedRobot}}}{\sphinxparam{\DUrole{n}{xs0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{map}\DUrole{o}{=}\DUrole{default_value}{{[}{]}}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}\DUrole{n}{args}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{SimulatedRobot.}}\sphinxbfcode{\sphinxupquote{SimulatedRobot}}}{\emph{\DUrole{n}{xs0}}, \emph{\DUrole{n}{map}\DUrole{o}{=}\DUrole{default_value}{{[}{]}}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
 \sphinxAtStartPar
 Bases: \sphinxcode{\sphinxupquote{object}}
 
@@ -303,10 +191,7 @@ Each robot has a motion model and a measurement model. The motion model is used 
 \index{dt (SimulatedRobot.SimulatedRobot attribute)@\spxentry{dt}\spxextra{SimulatedRobot.SimulatedRobot attribute}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot.dt}}
-\pysigstartsignatures
-\pysigline{\sphinxbfcode{\sphinxupquote{dt}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }0.1}}}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot.dt}}\pysigline{\sphinxbfcode{\sphinxupquote{dt}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{  }\DUrole{p}{=}\DUrole{w}{  }0.1}}}
 \sphinxAtStartPar
 class attribute containing sample time of the simulation
 
@@ -315,11 +200,8 @@ class attribute containing sample time of the simulation
 \index{\_\_init\_\_() (SimulatedRobot.SimulatedRobot method)@\spxentry{\_\_init\_\_()}\spxextra{SimulatedRobot.SimulatedRobot method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot.__init__}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\sphinxparam{\DUrole{n}{xs0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{map}\DUrole{o}{=}\DUrole{default_value}{{[}{]}}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}\DUrole{n}{args}}}{}
-\pysigstopsignatures\begin{quote}\begin{description}
-\sphinxlineitem{Parameters}\begin{itemize}
+\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot.__init__}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\emph{\DUrole{n}{xs0}}, \emph{\DUrole{n}{map}\DUrole{o}{=}\DUrole{default_value}{{[}{]}}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{xs0}} \textendash{} initial simulated robot state \(x_{s_0}\) used to initialize the the motion model
@@ -411,10 +293,7 @@ Then, the robot animation is initialized defining the following attributes:
 \index{PlotRobot() (SimulatedRobot.SimulatedRobot method)@\spxentry{PlotRobot()}\spxextra{SimulatedRobot.SimulatedRobot method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot.PlotRobot}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{PlotRobot}}}{}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot.PlotRobot}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{PlotRobot}}}{}{}
 \sphinxAtStartPar
 Updates the plot of the robot at the current pose
 
@@ -423,16 +302,13 @@ Updates the plot of the robot at the current pose
 \index{fs() (SimulatedRobot.SimulatedRobot method)@\spxentry{fs()}\spxextra{SimulatedRobot.SimulatedRobot method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot.fs}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{fs}}}{\sphinxparam{\DUrole{n}{xsk\_1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{usk}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot.fs}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{fs}}}{\emph{\DUrole{n}{xsk\_1}}, \emph{\DUrole{n}{uk}}}{}
 \sphinxAtStartPar
 Motion model used to simulate the robot motion. Computes the current robot state \(x_k\) given the previous robot state \(x_{k-1}\) and the input \(u_k\).
 It also updates the object attributes \(xsk\), \(xsk_1\) and  \(usk\) to be made them available for plotting purposes.
 \sphinxstyleemphasis{To be overriden in child class}.
 \begin{quote}\begin{description}
-\sphinxlineitem{Parameters}\begin{itemize}
+\item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{xsk\_1}} \textendash{} previous robot state \(x_{k-1}\)
@@ -443,7 +319,7 @@ It also updates the object attributes \(xsk\), \(xsk_1\) and  \(usk\) to be made
 
 \end{itemize}
 
-\sphinxlineitem{Returns}
+\item[{Returns}] \leavevmode
 \sphinxAtStartPar
 current robot state \(x_k\)
 
@@ -454,10 +330,7 @@ current robot state \(x_k\)
 \index{SetMap() (SimulatedRobot.SimulatedRobot method)@\spxentry{SetMap()}\spxextra{SimulatedRobot.SimulatedRobot method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot.SetMap}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{SetMap}}}{\sphinxparam{\DUrole{n}{map}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot.SetMap}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{SetMap}}}{\emph{\DUrole{n}{map}}}{}
 \sphinxAtStartPar
 Initializes the map of the environment.
 
@@ -466,10 +339,7 @@ Initializes the map of the environment.
 \index{\_PlotSample() (SimulatedRobot.SimulatedRobot method)@\spxentry{\_PlotSample()}\spxextra{SimulatedRobot.SimulatedRobot method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot._PlotSample}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_PlotSample}}}{\sphinxparam{\DUrole{n}{x}}\sphinxparamcomma \sphinxparam{\DUrole{n}{P}}\sphinxparamcomma \sphinxparam{\DUrole{n}{n}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot._PlotSample}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_PlotSample}}}{\emph{\DUrole{n}{x}}, \emph{\DUrole{n}{P}}, \emph{\DUrole{n}{n}}}{}
 \sphinxAtStartPar
 Plots n samples of a multivariate gaussian distribution. This function is used only for testing, to plot the
 uncertainty through samples.
@@ -495,12 +365,9 @@ uncertainty through samples.
 \index{DifferentialDriveSimulatedRobot (class in DifferentialDriveSimulatedRobot)@\spxentry{DifferentialDriveSimulatedRobot}\spxextra{class in DifferentialDriveSimulatedRobot}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{DifferentialDriveSimulatedRobot.}}\sphinxbfcode{\sphinxupquote{DifferentialDriveSimulatedRobot}}}{\sphinxparam{\DUrole{n}{xs0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{map}\DUrole{o}{=}\DUrole{default_value}{{[}{]}}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}\DUrole{n}{args}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{DifferentialDriveSimulatedRobot.}}\sphinxbfcode{\sphinxupquote{DifferentialDriveSimulatedRobot}}}{\emph{\DUrole{n}{xs0}}, \emph{\DUrole{n}{map}\DUrole{o}{=}\DUrole{default_value}{{[}{]}}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
 \sphinxAtStartPar
-Bases: {\hyperref[\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{SimulatedRobot}}}}}
+Bases: {\hyperref[\detokenize{robot_simulation:SimulatedRobot.SimulatedRobot}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{SimulatedRobot.SimulatedRobot}}}}}
 
 \sphinxAtStartPar
 This class implements a simulated differential drive robot. It inherits from the \sphinxcode{\sphinxupquote{SimulatedRobot}} class and
@@ -508,11 +375,8 @@ overrides some of its methods to define the differential drive robot motion mode
 \index{\_\_init\_\_() (DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method)@\spxentry{\_\_init\_\_()}\spxextra{DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot.__init__}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\sphinxparam{\DUrole{n}{xs0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{map}\DUrole{o}{=}\DUrole{default_value}{{[}{]}}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}\DUrole{n}{args}}}{}
-\pysigstopsignatures\begin{quote}\begin{description}
-\sphinxlineitem{Parameters}\begin{itemize}
+\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot.__init__}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\emph{\DUrole{n}{xs0}}, \emph{\DUrole{n}{map}\DUrole{o}{=}\DUrole{default_value}{{[}{]}}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{xs0}} \textendash{} initial simulated robot state \(\mathbf{x_{s_0}}=[^Nx{_{s_0}}~^Ny{_{s_0}}~^N\psi{_{s_0}}~]^T\) used to initialize the  motion model
@@ -600,10 +464,7 @@ Check the parent class \sphinxcode{\sphinxupquote{prpy.SimulatedRobot}} to know 
 \index{fs() (DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method)@\spxentry{fs()}\spxextra{DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot.fs}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{fs}}}{\sphinxparam{\DUrole{n}{xsk\_1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{usk}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot.fs}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{fs}}}{\emph{\DUrole{n}{xsk\_1}}, \emph{\DUrole{n}{usk}}}{}
 \sphinxAtStartPar
 Motion model used to simulate the robot motion. Computes the current robot state \(x_k\) given the previous robot state \(x_{k-1}\) and the input \(u_k\):
 \begin{equation}\label{equation:robot_simulation:eq:fs}
@@ -614,7 +475,7 @@ u_{s_k}&=\nu_{d}=\begin{bmatrix} u_d& r_d\end{bmatrix}^T\\
 w_{s_k}&=\dot \nu_{s_k}\\
 x_{s_k}&=f_s(x_{s_{k-1}},u_{s_k},w_{s_k}) \\
 &=\begin{bmatrix}
-\eta_{s_{k-1}} \oplus (\nu_{s_{k-1}}\Delta t + \frac{1}{2} w_{s_k} \Delta t^2) \\
+\eta_{s_{k-1}} \oplus (\nu_{s_{k-1}}\Delta t + \frac{1}{2} w_{s_k}) \\
 \nu_{s_{k-1}}+K(\nu_{d}-\nu_{s_{k-1}}) + w_{s_k} \Delta t
 \end{bmatrix} \quad;\quad K=diag(k_1,k_2,k_3) \quad k_i>0\\\end{split}
 \end{equation}
@@ -630,7 +491,7 @@ Finally, the class updates the object attributes \(xsk\), \(xsk\_1\) and  \(usk\
 \sphinxAtStartPar
 \sphinxstylestrong{To be completed by the student}.
 \begin{quote}\begin{description}
-\sphinxlineitem{Parameters}\begin{itemize}
+\item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{xsk\_1}} \textendash{} previous robot state \(x_{s_{k-1}}=\begin{bmatrix}\eta_{s_{k-1}}^T & \nu_{s_{k-1}}^T\end{bmatrix}^T\)
@@ -641,7 +502,7 @@ Finally, the class updates the object attributes \(xsk\), \(xsk\_1\) and  \(usk\
 
 \end{itemize}
 
-\sphinxlineitem{Returns}
+\item[{Returns}] \leavevmode
 \sphinxAtStartPar
 current robot state \(x_{s_k}\)
 
@@ -652,19 +513,16 @@ current robot state \(x_{s_k}\)
 \index{ReadEncoders() (DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method)@\spxentry{ReadEncoders()}\spxextra{DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot.ReadEncoders}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{ReadEncoders}}}{}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot.ReadEncoders}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{ReadEncoders}}}{}{}
 \sphinxAtStartPar
 Simulates the robot measurements of the left and right wheel encoders.
 
 \sphinxAtStartPar
 \sphinxstylestrong{To be completed by the student}.
 \begin{quote}\begin{description}
-\sphinxlineitem{Return zsk,Rsk}
+\item[{Return zsk,Rsk}] \leavevmode
 \sphinxAtStartPar
-\(zk=[\Delta n_L~ \Delta n_R]^T\) observation vector containing number of pulses read from the left and right wheel encoders during the last differential motion. \(R_{s_k}=diag(\sigma_L^2,\sigma_R^2)\) covariance matrix of the read pulses.
+\(zk=[n_L~n_R]^T\) observation vector containing number of pulses read from the left and right wheel encoders. \(R_{s_k}=diag(\sigma_L^2,\sigma_R^2)\) covariance matrix of the read pulses.
 
 \end{description}\end{quote}
 
@@ -673,45 +531,13 @@ Simulates the robot measurements of the left and right wheel encoders.
 \index{ReadCompass() (DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method)@\spxentry{ReadCompass()}\spxextra{DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot.ReadCompass}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{ReadCompass}}}{}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot.ReadCompass}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{ReadCompass}}}{}{}
 \sphinxAtStartPar
 Simulates the compass reading of the robot.
 \begin{quote}\begin{description}
-\sphinxlineitem{Returns}
+\item[{Returns}] \leavevmode
 \sphinxAtStartPar
 yaw and the covariance of its noise \sphinxstyleemphasis{R\_yaw}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{ReadCartesian2DFeature() (DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method)@\spxentry{ReadCartesian2DFeature()}\spxextra{DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot.ReadCartesian2DFeature}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{ReadCartesian2DFeature}}}{}{}
-\pysigstopsignatures
-\sphinxAtStartPar
-Simulates the reading of 2D cartesian features. The features are placed in the map in cartesian coordinates.
-\begin{quote}\begin{description}
-\sphinxlineitem{Returns}
-\sphinxAtStartPar
-\begin{description}
-\sphinxlineitem{zsk: {[}{[}x1 y1{]},…,{[}xn yn{]}{]}}
-\sphinxAtStartPar
-Cartesian position of the feature observations.
-
-\sphinxlineitem{Rsk: block\_diag(R\_1,…,R\_n), where R\_i={[}{[}r\_xx r\_xy{]},{[}r\_xy r\_yy{]}{]} is the}
-\sphinxAtStartPar
-2x2 i\sphinxhyphen{}th feature observation covariance.
-Covariance of the Cartesian feature observations. Note the features are uncorrelated among them. They are independent. However, the x and y coordinates of each feature are correlated.
-
-\end{description}
-
 
 \end{description}\end{quote}
 
@@ -720,10 +546,7 @@ Covariance of the Cartesian feature observations. Note the features are uncorrel
 \index{PlotRobot() (DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method)@\spxentry{PlotRobot()}\spxextra{DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot.PlotRobot}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{PlotRobot}}}{}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{robot_simulation:DifferentialDriveSimulatedRobot.DifferentialDriveSimulatedRobot.PlotRobot}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{PlotRobot}}}{}{}
 \sphinxAtStartPar
 Updates the plot of the robot at the current pose
 
@@ -733,13 +556,9 @@ Updates the plot of the robot at the current pose
 \end{fulllineitems}
 
 
-\sphinxstepscope
-
 
 \section{Robot Localization}
 \label{\detokenize{Localization_index:robot-localization}}\label{\detokenize{Localization_index::doc}}
-\sphinxstepscope
-
 
 \subsection{Robot Localization}
 \label{\detokenize{Localization:robot-localization}}\label{\detokenize{Localization::doc}}
@@ -751,10 +570,7 @@ Updates the plot of the robot at the current pose
 \index{Localization (class in Localization)@\spxentry{Localization}\spxextra{class in Localization}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{Localization:Localization.Localization}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{Localization.}}\sphinxbfcode{\sphinxupquote{Localization}}}{\sphinxparam{\DUrole{n}{index}}\sphinxparamcomma \sphinxparam{\DUrole{n}{kSteps}}\sphinxparamcomma \sphinxparam{\DUrole{n}{robot}}\sphinxparamcomma \sphinxparam{\DUrole{n}{x0}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}\DUrole{n}{args}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{Localization:Localization.Localization}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{Localization.}}\sphinxbfcode{\sphinxupquote{Localization}}}{\emph{\DUrole{n}{index}}, \emph{\DUrole{n}{kSteps}}, \emph{\DUrole{n}{robot}}, \emph{\DUrole{n}{x0}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
 \sphinxAtStartPar
 Bases: \sphinxcode{\sphinxupquote{object}}
 
@@ -763,14 +579,11 @@ Localization base class. Implements the localization algorithm.
 \index{\_\_init\_\_() (Localization.Localization method)@\spxentry{\_\_init\_\_()}\spxextra{Localization.Localization method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{Localization:Localization.Localization.__init__}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\sphinxparam{\DUrole{n}{index}}\sphinxparamcomma \sphinxparam{\DUrole{n}{kSteps}}\sphinxparamcomma \sphinxparam{\DUrole{n}{robot}}\sphinxparamcomma \sphinxparam{\DUrole{n}{x0}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}\DUrole{n}{args}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{Localization:Localization.Localization.__init__}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\emph{\DUrole{n}{index}}, \emph{\DUrole{n}{kSteps}}, \emph{\DUrole{n}{robot}}, \emph{\DUrole{n}{x0}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
 \sphinxAtStartPar
 Constructor of the DRLocalization class.
 \begin{quote}\begin{description}
-\sphinxlineitem{Parameters}\begin{itemize}
+\item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{index}} \textendash{} Logging index structure (\sphinxcode{\sphinxupquote{prpy.Index}})
@@ -800,14 +613,11 @@ Constructor of the DRLocalization class.
 \index{GetInput() (Localization.Localization method)@\spxentry{GetInput()}\spxextra{Localization.Localization method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{Localization:Localization.Localization.GetInput}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{GetInput}}}{}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{Localization:Localization.Localization.GetInput}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{GetInput}}}{}{}
 \sphinxAtStartPar
 Gets the input from the robot. To be overidden by the child class.
 \begin{quote}\begin{description}
-\sphinxlineitem{Return uk}
+\item[{Return uk}] \leavevmode
 \sphinxAtStartPar
 input variable
 
@@ -818,18 +628,15 @@ input variable
 \index{Localize() (Localization.Localization method)@\spxentry{Localize()}\spxextra{Localization.Localization method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{Localization:Localization.Localization.Localize}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Localize}}}{\sphinxparam{\DUrole{n}{xk\_1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uk}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{Localization:Localization.Localization.Localize}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Localize}}}{\emph{\DUrole{n}{xk\_1}}, \emph{\DUrole{n}{uk}}}{}
 \sphinxAtStartPar
 Single Localization iteration invoked from \sphinxcode{\sphinxupquote{prpy.DRLocalization.Localization()}}. Given the previous robot pose, the function reads the inout and computes the current pose.
 \begin{quote}\begin{description}
-\sphinxlineitem{Parameters}
+\item[{Parameters}] \leavevmode
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{xk\_1}} \textendash{} previous robot pose
 
-\sphinxlineitem{Return xk}
+\item[{Return xk}] \leavevmode
 \sphinxAtStartPar
 current robot pose
 
@@ -840,14 +647,11 @@ current robot pose
 \index{LocalizationLoop() (Localization.Localization method)@\spxentry{LocalizationLoop()}\spxextra{Localization.Localization method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{Localization:Localization.Localization.LocalizationLoop}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{LocalizationLoop}}}{\sphinxparam{\DUrole{n}{x0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{usk}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{Localization:Localization.Localization.LocalizationLoop}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{LocalizationLoop}}}{\emph{\DUrole{n}{x0}}, \emph{\DUrole{n}{usk}}}{}
 \sphinxAtStartPar
 Given an initial robot pose \(x_0\) and the input to the \sphinxcode{\sphinxupquote{prpy.SimulatedRobot}} this method calls iteratively \sphinxcode{\sphinxupquote{prpy.DRLocalization.Localize()}} for k steps, solving the robot localization problem.
 \begin{quote}\begin{description}
-\sphinxlineitem{Parameters}
+\item[{Parameters}] \leavevmode
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{x0}} \textendash{} initial robot pose
 
@@ -858,14 +662,11 @@ Given an initial robot pose \(x_0\) and the input to the \sphinxcode{\sphinxupqu
 \index{Log() (Localization.Localization method)@\spxentry{Log()}\spxextra{Localization.Localization method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{Localization:Localization.Localization.Log}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Log}}}{\sphinxparam{\DUrole{n}{xsk}}\sphinxparamcomma \sphinxparam{\DUrole{n}{xk}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{Localization:Localization.Localization.Log}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Log}}}{\emph{\DUrole{n}{xsk}}, \emph{\DUrole{n}{xk}}}{}
 \sphinxAtStartPar
 Logs the results for later plotting.
 \begin{quote}\begin{description}
-\sphinxlineitem{Parameters}\begin{itemize}
+\item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{xsk}} \textendash{} ground truth robot pose from the simulation
@@ -883,10 +684,7 @@ Logs the results for later plotting.
 \index{PlotXY() (Localization.Localization method)@\spxentry{PlotXY()}\spxextra{Localization.Localization method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{Localization:Localization.Localization.PlotXY}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{PlotXY}}}{}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{Localization:Localization.Localization.PlotXY}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{PlotXY}}}{}{}
 \sphinxAtStartPar
 Plots, in a new figure, the ground truth (orange) and estimated (blue) trajectory of the robot at the end of the Localization Loop.
 
@@ -895,10 +693,7 @@ Plots, in a new figure, the ground truth (orange) and estimated (blue) trajector
 \index{PlotTrajectory() (Localization.Localization method)@\spxentry{PlotTrajectory()}\spxextra{Localization.Localization method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{Localization:Localization.Localization.PlotTrajectory}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{PlotTrajectory}}}{}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{Localization:Localization.Localization.PlotTrajectory}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{PlotTrajectory}}}{}{}
 \sphinxAtStartPar
 Plots the estimated trajectory (blue) of the robot during the localization process.
 
@@ -911,8 +706,6 @@ Plots the estimated trajectory (blue) of the robot during the localization proce
 
 \subsection{Dead Reckoning}
 \label{\detokenize{Localization_index:dead-reckoning}}
-\sphinxstepscope
-
 
 \subsubsection{3 DOF Differential Drive Mobile Robot Example}
 \label{\detokenize{DRLocalization:dof-differential-drive-mobile-robot-example}}\label{\detokenize{DRLocalization::doc}}
@@ -924,26 +717,20 @@ Plots the estimated trajectory (blue) of the robot during the localization proce
 \index{DR\_3DOFDifferentialDrive (class in DR\_3DOFDifferentialDrive)@\spxentry{DR\_3DOFDifferentialDrive}\spxextra{class in DR\_3DOFDifferentialDrive}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{DRLocalization:DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{DR\_3DOFDifferentialDrive.}}\sphinxbfcode{\sphinxupquote{DR\_3DOFDifferentialDrive}}}{\sphinxparam{\DUrole{n}{index}}\sphinxparamcomma \sphinxparam{\DUrole{n}{kSteps}}\sphinxparamcomma \sphinxparam{\DUrole{n}{robot}}\sphinxparamcomma \sphinxparam{\DUrole{n}{x0}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}\DUrole{n}{args}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{DRLocalization:DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{DR\_3DOFDifferentialDrive.}}\sphinxbfcode{\sphinxupquote{DR\_3DOFDifferentialDrive}}}{\emph{\DUrole{n}{index}}, \emph{\DUrole{n}{kSteps}}, \emph{\DUrole{n}{robot}}, \emph{\DUrole{n}{x0}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
 \sphinxAtStartPar
-Bases: {\hyperref[\detokenize{Localization:Localization.Localization}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Localization}}}}}
+Bases: {\hyperref[\detokenize{Localization:Localization.Localization}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Localization.Localization}}}}}
 
 \sphinxAtStartPar
 Dead Reckoning Localization for a Differential Drive Mobile Robot.
 \index{\_\_init\_\_() (DR\_3DOFDifferentialDrive.DR\_3DOFDifferentialDrive method)@\spxentry{\_\_init\_\_()}\spxextra{DR\_3DOFDifferentialDrive.DR\_3DOFDifferentialDrive method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{DRLocalization:DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.__init__}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\sphinxparam{\DUrole{n}{index}}\sphinxparamcomma \sphinxparam{\DUrole{n}{kSteps}}\sphinxparamcomma \sphinxparam{\DUrole{n}{robot}}\sphinxparamcomma \sphinxparam{\DUrole{n}{x0}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}\DUrole{n}{args}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{DRLocalization:DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.__init__}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\emph{\DUrole{n}{index}}, \emph{\DUrole{n}{kSteps}}, \emph{\DUrole{n}{robot}}, \emph{\DUrole{n}{x0}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
 \sphinxAtStartPar
 Constructor of the \sphinxcode{\sphinxupquote{prlab.DR\_3DOFDifferentialDrive}} class.
 \begin{quote}\begin{description}
-\sphinxlineitem{Parameters}
+\item[{Parameters}] \leavevmode
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{args}} \textendash{} Rest of arguments to be passed to the parent constructor
 
@@ -954,25 +741,22 @@ Constructor of the \sphinxcode{\sphinxupquote{prlab.DR\_3DOFDifferentialDrive}} 
 \index{Localize() (DR\_3DOFDifferentialDrive.DR\_3DOFDifferentialDrive method)@\spxentry{Localize()}\spxextra{DR\_3DOFDifferentialDrive.DR\_3DOFDifferentialDrive method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{DRLocalization:DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.Localize}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Localize}}}{\sphinxparam{\DUrole{n}{xk\_1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uk}}}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{DRLocalization:DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.Localize}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Localize}}}{\emph{\DUrole{n}{xk\_1}}, \emph{\DUrole{n}{uk}}}{}
 \sphinxAtStartPar
 Motion model for the 3DOF (\(x_k=[x_{k}~y_{k}~\psi_{k}]^T\)) Differential Drive Mobile robot using as input the readings of the wheel encoders (\(u_k=[n_L~n_R]^T\)).
 \begin{quote}\begin{description}
-\sphinxlineitem{Parameters}\begin{itemize}
+\item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{xk\_1}} \textendash{} previous robot pose estimate (\(x_{k-1}=[x_{k-1}~y_{k-1}~\psi_{k-1}]^T\))
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{uk}} \textendash{} input vector (\(u_k=[u_{k}~v_{k}~r_{k}]^T\))
+\sphinxstyleliteralstrong{\sphinxupquote{uk}} \textendash{} input vector (\(u_k=[u_{k}~v_{k}~w_{k}~r_{k}]^T\))
 
 \end{itemize}
 
-\sphinxlineitem{Return xk}
+\item[{Return xk}] \leavevmode
 \sphinxAtStartPar
 current robot pose estimate (\(x_k=[x_{k}~y_{k}~\psi_{k}]^T\))
 
@@ -983,14 +767,11 @@ current robot pose estimate (\(x_k=[x_{k}~y_{k}~\psi_{k}]^T\))
 \index{GetInput() (DR\_3DOFDifferentialDrive.DR\_3DOFDifferentialDrive method)@\spxentry{GetInput()}\spxextra{DR\_3DOFDifferentialDrive.DR\_3DOFDifferentialDrive method}}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{DRLocalization:DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.GetInput}}
-\pysigstartsignatures
-\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{GetInput}}}{}{}
-\pysigstopsignatures
+\phantomsection\label{\detokenize{DRLocalization:DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.GetInput}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{GetInput}}}{}{}
 \sphinxAtStartPar
 Get the input for the motion model. In this case, the input is the readings from both wheel encoders.
 \begin{quote}\begin{description}
-\sphinxlineitem{Returns}
+\item[{Returns}] \leavevmode
 \sphinxAtStartPar
 uk:  input vector (\(u_k=[n_L~n_R]^T\))
 
@@ -1003,16 +784,699 @@ uk:  input vector (\(u_k=[n_L~n_R]^T\))
 
 
 
-\begin{savenotes}\sphinxattablestart
-\sphinxthistablewithglobalstyle
-\sphinxthistablewithnovlinesstyle
+\section{Particle Filter}
+\label{\detokenize{particle_filter:particle-filter}}\label{\detokenize{particle_filter::doc}}
+\begin{figure}[htbp]
 \centering
-\begin{tabulary}{\linewidth}[t]{\X{1}{2}\X{1}{2}}
-\sphinxtoprule
-\sphinxtableatstartofbodyhook\sphinxbottomrule
-\end{tabulary}
-\sphinxtableafterendhook\par
-\sphinxattableend\end{savenotes}
+\capstart
+
+\noindent\sphinxincludegraphics[scale=0.75]{{ParticleFilter}.png}
+\caption{ParticleFilter Class Diagram.}\label{\detokenize{particle_filter:id1}}\end{figure}
+\index{ParticleFilter (class in ParticleFilter)@\spxentry{ParticleFilter}\spxextra{class in ParticleFilter}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:ParticleFilter.ParticleFilter}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{ParticleFilter.}}\sphinxbfcode{\sphinxupquote{ParticleFilter}}}{\emph{\DUrole{n}{index}}, \emph{\DUrole{n}{kSteps}}, \emph{\DUrole{n}{robot}}, \emph{\DUrole{n}{particles}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{Localization:Localization.Localization}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Localization.Localization}}}}}
+
+\sphinxAtStartPar
+Particle Filter Localization.
+
+\sphinxAtStartPar
+This class implements basic plotting and logging functionality for the Particle Filter,
+as well as the interface for the child classes to implement.
+
+\sphinxAtStartPar
+A particle filter is a Monte Carlo algorithm that approximates the posterior distribution of the robot
+by a set of weighted particles.  Note that the “weight” (which is a terrible term) is simply the 
+probability of the particle being correct. Therefore, each particle is an estimate, and each estimate 
+has some probability of being correct.
+\index{\_\_init\_\_() (ParticleFilter.ParticleFilter method)@\spxentry{\_\_init\_\_()}\spxextra{ParticleFilter.ParticleFilter method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:ParticleFilter.ParticleFilter.__init__}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\emph{\DUrole{n}{index}}, \emph{\DUrole{n}{kSteps}}, \emph{\DUrole{n}{robot}}, \emph{\DUrole{n}{particles}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
+\sphinxAtStartPar
+Constructor of the Particle Filter class.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{index}} \textendash{} Logging index structure (\sphinxcode{\sphinxupquote{Index}})
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{kSteps}} \textendash{} Number of time steps to simulate
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{robot}} \textendash{} Simulation robot object (\sphinxcode{\sphinxupquote{Robot}})
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{particles}} \textendash{} initial particles as a list of Pose objects (or at least a list of numpy arrays)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{args}} \textendash{} Rest of arguments to be passed to the parent constructor
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{MotionModel() (ParticleFilter.ParticleFilter method)@\spxentry{MotionModel()}\spxextra{ParticleFilter.ParticleFilter method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:ParticleFilter.ParticleFilter.MotionModel}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{MotionModel}}}{\emph{\DUrole{n}{particle}}, \emph{\DUrole{n}{u}}, \emph{\DUrole{n}{noise}}}{}
+\sphinxAtStartPar
+”
+Motion model of the Particle Filter to be overwritten by the child class.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{particle}} \textendash{} particle state vector
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{uk}} \textendash{} input vector
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{noise}} \textendash{} sample from a noise distribution to be added to the input
+
+\end{itemize}
+
+\item[{Return particle}] \leavevmode
+\sphinxAtStartPar
+updated particle state vector
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{Weight() (ParticleFilter.ParticleFilter method)@\spxentry{Weight()}\spxextra{ParticleFilter.ParticleFilter method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:ParticleFilter.ParticleFilter.Weight}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Weight}}}{\emph{\DUrole{n}{z}}, \emph{\DUrole{n}{R}}}{{ $\rightarrow$ None}}
+\sphinxAtStartPar
+Weight each particle by the liklihood of the particle being correct.
+The probability the particle is correct is given by the probability that it is correct given the measurements (z).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{z}} \textendash{} measurement vector
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{R}} \textendash{} measurement noise covariance
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{Resample() (ParticleFilter.ParticleFilter method)@\spxentry{Resample()}\spxextra{ParticleFilter.ParticleFilter method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:ParticleFilter.ParticleFilter.Resample}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Resample}}}{}{{ $\rightarrow$ None}}
+\sphinxAtStartPar
+Resample the particles based on their weights to ensure diversity and prevent particle degeneracy.
+
+\sphinxAtStartPar
+This function implements the resampling step of a particle filter algorithm. It uses the weights
+assigned to each particle to determine their likelihood of being selected. Particles with higher weights
+are more likely to be selected, while those with lower weights have a lower chance.
+
+\sphinxAtStartPar
+The resampling process helps to maintain a diverse set of particles that better represents the underlying
+probability distribution of the system state.
+
+\sphinxAtStartPar
+After resampling, the attributes ‘particles’ and ‘weights’ of the ParticleFilter instance are updated
+to reflect the new set of particles and their corresponding weights.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{Prediction() (ParticleFilter.ParticleFilter method)@\spxentry{Prediction()}\spxextra{ParticleFilter.ParticleFilter method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:ParticleFilter.ParticleFilter.Prediction}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Prediction}}}{\emph{\DUrole{n}{u}}, \emph{\DUrole{n}{Q}}}{}
+\sphinxAtStartPar
+Predict the next state of the system based on a given motion model.
+
+\sphinxAtStartPar
+This function updates the state of each particle by predicting its next state using a motion model.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{u}} \textendash{} input vector
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{Q}} \textendash{} the covariance matrix associated with the input vector
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{Update() (ParticleFilter.ParticleFilter method)@\spxentry{Update()}\spxextra{ParticleFilter.ParticleFilter method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:ParticleFilter.ParticleFilter.Update}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Update}}}{\emph{\DUrole{n}{z}}, \emph{\DUrole{n}{R}}}{}
+\sphinxAtStartPar
+Update the particle weights based on sensor measurements and perform resampling.
+
+\sphinxAtStartPar
+This function adjusts the weights of particles based on how well they match the sensor measurements.
+
+\sphinxAtStartPar
+The updated weights reflect the likelihood of each particle being the true state of the system given
+the sensor measurements.
+
+\sphinxAtStartPar
+After updating the weights, the function may perform resampling to ensure that particles with higher
+weights are more likely to be selected, maintaining diversity and preventing particle degeneracy.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{z}} \textendash{} measurement vector
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{R}} \textendash{} the covariance matrix associated with the measurement vector
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_mean\_particle() (ParticleFilter.ParticleFilter method)@\spxentry{get\_mean\_particle()}\spxextra{ParticleFilter.ParticleFilter method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:ParticleFilter.ParticleFilter.get_mean_particle}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{get\_mean\_particle}}}{}{}
+\sphinxAtStartPar
+Calculate the mean particle based on the current set of particles and their weights.
+:return: mean particle
+
+\end{fulllineitems}
+
+\index{get\_best\_particle() (ParticleFilter.ParticleFilter method)@\spxentry{get\_best\_particle()}\spxextra{ParticleFilter.ParticleFilter method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:ParticleFilter.ParticleFilter.get_best_particle}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{get\_best\_particle}}}{}{}
+\sphinxAtStartPar
+Calculate the best particle based on the current set of particles and their weights.
+:return: best particle
+
+\end{fulllineitems}
+
+\index{init\_plotting() (ParticleFilter.ParticleFilter method)@\spxentry{init\_plotting()}\spxextra{ParticleFilter.ParticleFilter method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:ParticleFilter.ParticleFilter.init_plotting}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{init\_plotting}}}{}{}
+\sphinxAtStartPar
+Init the plotting of the particles and the mean particle.
+
+\end{fulllineitems}
+
+\index{PlotParticles() (ParticleFilter.ParticleFilter method)@\spxentry{PlotParticles()}\spxextra{ParticleFilter.ParticleFilter method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:ParticleFilter.ParticleFilter.PlotParticles}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{PlotParticles}}}{}{}
+\sphinxAtStartPar
+Plots all the particles and the mean particle.
+Particles are plotted as green dots, and the mean particle is plotted as a blue dot.
+Particle orientation is plotted as a green line, and the mean particle orientation is plotted as a blue line.
+Particle size is proportional to the particle weight.
+Note that the size is scaled for visualization purposes, and does not reflect the actual weight.
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\section{MonteCarlo Localization}
+\label{\detokenize{particle_filter:montecarlo-localization}}
+\begin{figure}[htbp]
+\centering
+\capstart
+
+\noindent\sphinxincludegraphics[scale=0.75]{{MCLocalization}.png}
+\caption{MCLocalization Class Diagram.}\label{\detokenize{particle_filter:id2}}\end{figure}
+\index{MCLocalization (class in MCLocalization)@\spxentry{MCLocalization}\spxextra{class in MCLocalization}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:MCLocalization.MCLocalization}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{MCLocalization.}}\sphinxbfcode{\sphinxupquote{MCLocalization}}}{\emph{\DUrole{n}{index}}, \emph{\DUrole{n}{kSteps}}, \emph{\DUrole{n}{robot}}, \emph{\DUrole{n}{particles}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{particle_filter:ParticleFilter.ParticleFilter}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{ParticleFilter.ParticleFilter}}}}}
+
+\sphinxAtStartPar
+Monte Carlo Localization class.
+
+\sphinxAtStartPar
+This class is used as “Dead Reckoning” localization using a Particle Filter.
+It implements the Prediction method from \sphinxcode{\sphinxupquote{ParticleFilter}} and the 
+Localize and LocalizationLoop methods from \sphinxcode{\sphinxupquote{Localization}}.
+\index{\_\_init\_\_() (MCLocalization.MCLocalization method)@\spxentry{\_\_init\_\_()}\spxextra{MCLocalization.MCLocalization method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:MCLocalization.MCLocalization.__init__}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\emph{\DUrole{n}{index}}, \emph{\DUrole{n}{kSteps}}, \emph{\DUrole{n}{robot}}, \emph{\DUrole{n}{particles}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
+\sphinxAtStartPar
+Constructor.
+:param index: Named tuple used to map the state vector, the simulation vector and the observation vector (\sphinxcode{\sphinxupquote{prpy.IndexStruct}})
+:param kSteps: simulation time steps
+:param robot: Simulated Robot object
+:param particles: initial particles as a list of Pose objects (or at least a list of numpy arrays)
+:param args: arguments to be passed to the parent constructor
+
+\end{fulllineitems}
+
+\index{Prediction() (MCLocalization.MCLocalization method)@\spxentry{Prediction()}\spxextra{MCLocalization.MCLocalization method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:MCLocalization.MCLocalization.Prediction}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Prediction}}}{\emph{\DUrole{n}{u}}, \emph{\DUrole{n}{Q}}}{}
+\sphinxAtStartPar
+Prediction overriden from \sphinxcode{\sphinxupquote{ParticleFilter}}.
+Note: Use the MotionModel method from \sphinxcode{\sphinxupquote{ParticleFilter}} to update the particles to keep it generic. Then,
+child classes can overwrite the MotionModel method to implement their own motion model.
+
+\end{fulllineitems}
+
+\index{Localize() (MCLocalization.MCLocalization method)@\spxentry{Localize()}\spxextra{MCLocalization.MCLocalization method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:MCLocalization.MCLocalization.Localize}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Localize}}}{}{}
+\sphinxAtStartPar
+Single Localization iteration. Given the previous robot pose, the function reads the inout and computes the current pose.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+\sphinxstylestrong{xk} current robot pose (we can assume the mean of the particles or the most likely particle)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{LocalizationLoop() (MCLocalization.MCLocalization method)@\spxentry{LocalizationLoop()}\spxextra{MCLocalization.MCLocalization method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:MCLocalization.MCLocalization.LocalizationLoop}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{LocalizationLoop}}}{\emph{\DUrole{n}{x0}}, \emph{\DUrole{n}{usk}}}{}
+\sphinxAtStartPar
+Given an initial robot pose \(x_0\) and the input to the \sphinxcode{\sphinxupquote{SimulatedRobot}} this method calls iteratively \sphinxcode{\sphinxupquote{DRLocalization.Localize()}} for k steps, solving the robot localization problem.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{x0}} \textendash{} initial robot pose
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{usk}} \textendash{} input vector for the simulation
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\section{Particle Filter Map Based Localization}
+\label{\detokenize{particle_filter:particle-filter-map-based-localization}}
+\begin{figure}[htbp]
+\centering
+\capstart
+
+\noindent\sphinxincludegraphics[scale=0.75]{{PFMBL}.png}
+\caption{PFMBL Class Diagram.}\label{\detokenize{particle_filter:id3}}\end{figure}
+\index{PFMBL (class in PFMBLocalization)@\spxentry{PFMBL}\spxextra{class in PFMBLocalization}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PFMBLocalization.PFMBL}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{PFMBLocalization.}}\sphinxbfcode{\sphinxupquote{PFMBL}}}{\emph{\DUrole{n}{zf\_dim}}, \emph{\DUrole{n}{M}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{particle_filter:MCLocalization.MCLocalization}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{MCLocalization.MCLocalization}}}}}
+
+\sphinxAtStartPar
+Particle Filter Map Based Localization class.
+
+\sphinxAtStartPar
+This class defines a Map Based Localization using a Particle Filter. It inherits from \sphinxcode{\sphinxupquote{MCLocalization}}, so the Prediction step is already implemented.
+It needs to implement the Update function, and consecuently the Weight and Resample functions.
+\index{\_\_init\_\_() (PFMBLocalization.PFMBL method)@\spxentry{\_\_init\_\_()}\spxextra{PFMBLocalization.PFMBL method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PFMBLocalization.PFMBL.__init__}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\emph{\DUrole{n}{zf\_dim}}, \emph{\DUrole{n}{M}}, \emph{\DUrole{o}{*}\DUrole{n}{args}}}{{ $\rightarrow$ None}}
+\sphinxAtStartPar
+Constructor.
+:param index: Named tuple used to map the state vector, the simulation vector and the observation vector (\sphinxcode{\sphinxupquote{prpy.IndexStruct}})
+:param kSteps: simulation time steps
+:param robot: Simulated Robot object
+:param particles: initial particles as a list of Pose objects (or at least a list of numpy arrays)
+:param args: arguments to be passed to the parent constructor
+
+\end{fulllineitems}
+
+\index{Weight() (PFMBLocalization.PFMBL method)@\spxentry{Weight()}\spxextra{PFMBLocalization.PFMBL method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PFMBLocalization.PFMBL.Weight}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Weight}}}{\emph{\DUrole{n}{z}}, \emph{\DUrole{n}{R}}}{}
+\sphinxAtStartPar
+Weight each particle by the liklihood of the particle being correct.
+The probability the particle is correct is given by the probability that it is correct given the measurements (z).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{z}} \textendash{} measurement vector
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{R}} \textendash{} measurement noise covariance
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{Resample() (PFMBLocalization.PFMBL method)@\spxentry{Resample()}\spxextra{PFMBLocalization.PFMBL method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PFMBLocalization.PFMBL.Resample}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Resample}}}{}{}
+\sphinxAtStartPar
+Resample the particles based on their weights to ensure diversity and prevent particle degeneracy.
+
+\sphinxAtStartPar
+This function implements the resampling step of a particle filter algorithm. It uses the weights
+assigned to each particle to determine their likelihood of being selected. Particles with higher weights
+are more likely to be selected, while those with lower weights have a lower chance.
+
+\sphinxAtStartPar
+The resampling process helps to maintain a diverse set of particles that better represents the underlying
+probability distribution of the system state.
+
+\sphinxAtStartPar
+After resampling, the attributes ‘particles’ and ‘weights’ of the ParticleFilter instance are updated
+to reflect the new set of particles and their corresponding weights.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+None
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{Update() (PFMBLocalization.PFMBL method)@\spxentry{Update()}\spxextra{PFMBLocalization.PFMBL method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PFMBLocalization.PFMBL.Update}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Update}}}{\emph{\DUrole{n}{z}}, \emph{\DUrole{n}{R}}}{}
+\sphinxAtStartPar
+Update the particle weights based on sensor measurements and perform resampling.
+
+\sphinxAtStartPar
+This function adjusts the weights of particles based on how well they match the sensor measurements.
+
+\sphinxAtStartPar
+The updated weights reflect the likelihood of each particle being the true state of the system given
+the sensor measurements.
+
+\sphinxAtStartPar
+After updating the weights, the function may perform resampling to ensure that particles with higher
+weights are more likely to be selected, maintaining diversity and preventing particle degeneracy.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{z}} \textendash{} measurement vector
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{R}} \textendash{} the covariance matrix associated with the measurement vector
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{Localize() (PFMBLocalization.PFMBL method)@\spxentry{Localize()}\spxextra{PFMBLocalization.PFMBL method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PFMBLocalization.PFMBL.Localize}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{Localize}}}{}{}
+\sphinxAtStartPar
+Single Localization iteration. Given the previous robot pose, the function reads the inout and computes the current pose.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+\sphinxstylestrong{xk} current robot pose (we can assume the mean of the particles or the most likely particle)
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\section{PF 3DOF Dead Reckoning}
+\label{\detokenize{particle_filter:pf-3dof-dead-reckoning}}
+\begin{figure}[htbp]
+\centering
+\capstart
+
+\noindent\sphinxincludegraphics[scale=0.75]{{PF_3DOF_DR}.png}
+\caption{PF\_3DOF\_DR Class Diagram.}\label{\detokenize{particle_filter:id4}}\end{figure}
+\index{PF\_3DOF\_DR (class in PF\_3DOF\_DR)@\spxentry{PF\_3DOF\_DR}\spxextra{class in PF\_3DOF\_DR}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PF_3DOF_DR.PF_3DOF_DR}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{PF\_3DOF\_DR.}}\sphinxbfcode{\sphinxupquote{PF\_3DOF\_DR}}}{\emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{particle_filter:MCLocalization.MCLocalization}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{MCLocalization.MCLocalization}}}}}
+\index{\_\_init\_\_() (PF\_3DOF\_DR.PF\_3DOF\_DR method)@\spxentry{\_\_init\_\_()}\spxextra{PF\_3DOF\_DR.PF\_3DOF\_DR method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PF_3DOF_DR.PF_3DOF_DR.__init__}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
+\sphinxAtStartPar
+Constructor.
+:param index: Named tuple used to map the state vector, the simulation vector and the observation vector (\sphinxcode{\sphinxupquote{prpy.IndexStruct}})
+:param kSteps: simulation time steps
+:param robot: Simulated Robot object
+:param particles: initial particles as a list of Pose objects (or at least a list of numpy arrays)
+:param args: arguments to be passed to the parent constructor
+
+\end{fulllineitems}
+
+\index{GetInput() (PF\_3DOF\_DR.PF\_3DOF\_DR method)@\spxentry{GetInput()}\spxextra{PF\_3DOF\_DR.PF\_3DOF\_DR method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PF_3DOF_DR.PF_3DOF_DR.GetInput}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{GetInput}}}{}{}
+\sphinxAtStartPar
+Get the input for the motion model.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{uk, Qk}. uk: input vector (\(u_k=[n_L~n_R]^T\)), Qk: covariance of the input noise
+
+\end{itemize}
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{MotionModel() (PF\_3DOF\_DR.PF\_3DOF\_DR method)@\spxentry{MotionModel()}\spxextra{PF\_3DOF\_DR.PF\_3DOF\_DR method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PF_3DOF_DR.PF_3DOF_DR.MotionModel}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{MotionModel}}}{\emph{\DUrole{n}{particle}}, \emph{\DUrole{n}{u}}, \emph{\DUrole{n}{noise}}}{}
+\sphinxAtStartPar
+”
+Motion model of the Particle Filter to be overwritten by the child class.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{particle}} \textendash{} particle state vector
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{uk}} \textendash{} input vector
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{noise}} \textendash{} sample from a noise distribution to be added to the input
+
+\end{itemize}
+
+\item[{Return particle}] \leavevmode
+\sphinxAtStartPar
+updated particle state vector
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\section{PF 3DOF Map Based Localization}
+\label{\detokenize{particle_filter:pf-3dof-map-based-localization}}
+\begin{figure}[htbp]
+\centering
+\capstart
+
+\noindent\sphinxincludegraphics[scale=0.75]{{PF_3DOF_MBL}.png}
+\caption{PF\_3DOF\_MBL Class Diagram.}\label{\detokenize{particle_filter:id5}}\end{figure}
+\index{PF\_3DOF\_MBL (class in PF\_3DOF\_MBL)@\spxentry{PF\_3DOF\_MBL}\spxextra{class in PF\_3DOF\_MBL}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PF_3DOF_MBL.PF_3DOF_MBL}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{  }}}\sphinxcode{\sphinxupquote{PF\_3DOF\_MBL.}}\sphinxbfcode{\sphinxupquote{PF\_3DOF\_MBL}}}{\emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{particle_filter:PFMBLocalization.PFMBL}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{PFMBLocalization.PFMBL}}}}}
+\index{\_\_init\_\_() (PF\_3DOF\_MBL.PF\_3DOF\_MBL method)@\spxentry{\_\_init\_\_()}\spxextra{PF\_3DOF\_MBL.PF\_3DOF\_MBL method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PF_3DOF_MBL.PF_3DOF_MBL.__init__}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{\_\_init\_\_}}}{\emph{\DUrole{o}{*}\DUrole{n}{args}}}{}
+\sphinxAtStartPar
+Constructor.
+:param index: Named tuple used to map the state vector, the simulation vector and the observation vector (\sphinxcode{\sphinxupquote{prpy.IndexStruct}})
+:param kSteps: simulation time steps
+:param robot: Simulated Robot object
+:param particles: initial particles as a list of Pose objects (or at least a list of numpy arrays)
+:param args: arguments to be passed to the parent constructor
+
+\end{fulllineitems}
+
+\index{GetInput() (PF\_3DOF\_MBL.PF\_3DOF\_MBL method)@\spxentry{GetInput()}\spxextra{PF\_3DOF\_MBL.PF\_3DOF\_MBL method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PF_3DOF_MBL.PF_3DOF_MBL.GetInput}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{GetInput}}}{}{}
+\sphinxAtStartPar
+Get the input for the motion model.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{uk, Qk}. uk: input vector (\(u_k=[n_L~n_R]^T\)), Qk: covariance of the input noise
+
+\end{itemize}
+
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{GetMeasurements() (PF\_3DOF\_MBL.PF\_3DOF\_MBL method)@\spxentry{GetMeasurements()}\spxextra{PF\_3DOF\_MBL.PF\_3DOF\_MBL method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PF_3DOF_MBL.PF_3DOF_MBL.GetMeasurements}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{GetMeasurements}}}{}{}
+\sphinxAtStartPar
+Read the measurements from the robot. Returns a vector of range distances to the map features.
+Only those features that are within the \sphinxcode{\sphinxupquote{SimulatedRobot.SimulatedRobot.Distance\_max\_range}} of the sensor are returned.
+The measurements arribe at a frequency defined in the \sphinxcode{\sphinxupquote{SimulatedRobot.SimulatedRobot.Distance\_feature\_reading\_frequency}} attribute.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+\sphinxAtStartPar
+vector of distances to the map features, covariance of the measurement noise
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{MotionModel() (PF\_3DOF\_MBL.PF\_3DOF\_MBL method)@\spxentry{MotionModel()}\spxextra{PF\_3DOF\_MBL.PF\_3DOF\_MBL method}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{particle_filter:PF_3DOF_MBL.PF_3DOF_MBL.MotionModel}}\pysiglinewithargsret{\sphinxbfcode{\sphinxupquote{MotionModel}}}{\emph{\DUrole{n}{particle}}, \emph{\DUrole{n}{u}}, \emph{\DUrole{n}{noise}}}{}
+\sphinxAtStartPar
+”
+Motion model of the Particle Filter to be overwritten by the child class.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{particle}} \textendash{} particle state vector
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{uk}} \textendash{} input vector
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{noise}} \textendash{} sample from a noise distribution to be added to the input
+
+\end{itemize}
+
+\item[{Return particle}] \leavevmode
+\sphinxAtStartPar
+updated particle state vector
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\begin{savenotes}\sphinxatlongtablestart\begin{longtable}[c]{\X{1}{2}\X{1}{2}}
+\hline
+
+\endfirsthead
+
+\multicolumn{2}{c}%
+{\makebox[0pt]{\sphinxtablecontinued{\tablename\ \thetable{} \textendash{} continued from previous page}}}\\
+\hline
+
+\endhead
+
+\hline
+\multicolumn{2}{r}{\makebox[0pt][r]{\sphinxtablecontinued{continues on next page}}}\\
+\endfoot
+
+\endlastfoot
+
+\end{longtable}\sphinxatlongtableend\end{savenotes}
 
 
 \chapter{Indices and tables}

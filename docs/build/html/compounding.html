@@ -14,6 +14,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -47,8 +48,59 @@
 <div class="section" id="pose-3dof">
 <h2>Pose 3DOF<a class="headerlink" href="#pose-3dof" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-center">
-<a class="reference internal image-reference" href="../../pyreverse_output/Pose3D.png"><img alt="Pose3D Class Diagram" src="../../pyreverse_output/Pose3D.png" /></a>
+<a class="reference internal image-reference" href="_images/Pose3D.png"><img alt="Pose3D Class Diagram" src="_images/Pose3D.png" style="width: 252.0px; height: 1179.0px;" /></a>
 </div>
+<dl class="py class">
+<dt class="sig sig-object py" id="Pose3D.Pose3D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Pose3D.</span></span><span class="sig-name descname"><span class="pre">Pose3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Pose3D.Pose3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p>
+<p>Definition of a robot pose in 3 DOF (x, y, yaw). The class inherits from a ndarray.
+This class extends the ndarray with the $oplus$ and $ominus$ operators and the corresponding Jacobians.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Pose3D.Pose3D.oplus">
+<span class="sig-name descname"><span class="pre">oplus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">BxC</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Pose3D.Pose3D.oplus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a Pose3D object <em>AxB</em> (the self object) and a Pose3D object <em>BxC</em>, it returns the Pose3D object <em>AxC</em>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{{^A}x_B} &amp;= \begin{bmatrix} ^Ax_B &amp; ^Ay_B &amp; ^A\psi_B \end{bmatrix}^T \\
+\mathbf{{^B}x_C} &amp;= \begin{bmatrix} ^Bx_C &amp; ^By_C &amp; &amp; ^B\psi_C \end{bmatrix}^T \\\end{split}\]</div>
+<p>The operation is defined as:</p>
+<div class="math notranslate nohighlight" id="equation-eq-oplus3dof">
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-oplus3dof" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{{^A}x_C} &amp;= \mathbf{{^A}x_B} \oplus \mathbf{{^B}x_C} =
+\begin{bmatrix}
+    ^Ax_B + ^Bx_C  \cos(^A\psi_B) - ^By_C  \sin(^A\psi_B) \\
+    ^Ay_B + ^Bx_C  \sin(^A\psi_B) + ^By_C  \cos(^A\psi_B) \\
+    ^A\psi_B + ^B\psi_C
+\end{bmatrix}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>BxC</strong> – C-Frame pose expressed in B-Frame coordinates</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>C-Frame pose expressed in A-Frame coordinates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Pose3D.Pose3D.ominus">
+<span class="sig-name descname"><span class="pre">ominus</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Pose3D.Pose3D.ominus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse pose compounding of the <em>AxB</em> pose (the self objetc):</p>
+<div class="math notranslate nohighlight" id="equation-eq-ominus3dof">
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-ominus3dof" title="Permalink to this equation">¶</a></span>\[\begin{split}^Bx_A = \ominus ^Ax_B =
+\begin{bmatrix}
+    -^Ax_B \cos(^A\psi_B) - ^Ay_B \sin(^A\psi_B) \\
+    ^Ax_B \sin(^A\psi_B) - ^Ay_B \cos(^A\psi_B) \\
+    -^A\psi_B
+\end{bmatrix}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A-Frame pose expressed in B-Frame coordinates (eq. <a class="reference internal" href="#equation-eq-ominus3dof">(2)</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 

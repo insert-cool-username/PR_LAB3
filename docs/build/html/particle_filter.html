@@ -1,0 +1,545 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Particle Filter &#8212; prpy: Probabilistic Robot Localization Python Library 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="3 DOF Differential Drive Mobile Robot Example" href="DRLocalization.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="DRLocalization.html" title="3 DOF Differential Drive Mobile Robot Example"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">prpy: Probabilistic Robot Localization Python Library 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Particle Filter</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="particle-filter">
+<h1>Particle Filter<a class="headerlink" href="#particle-filter" title="Permalink to this headline">¶</a></h1>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="_images/ParticleFilter.png"><img alt="ParticleFilter Class Diagram" src="_images/ParticleFilter.png" style="width: 249.0px; height: 642.75px;" /></a>
+<p class="caption"><span class="caption-text">ParticleFilter Class Diagram.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="ParticleFilter.ParticleFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ParticleFilter.</span></span><span class="sig-name descname"><span class="pre">ParticleFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kSteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particles</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ParticleFilter.ParticleFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="Localization.html#Localization.Localization" title="Localization.Localization"><code class="xref py py-class docutils literal notranslate"><span class="pre">Localization.Localization</span></code></a></p>
+<p>Particle Filter Localization.</p>
+<p>This class implements basic plotting and logging functionality for the Particle Filter,
+as well as the interface for the child classes to implement.</p>
+<p>A particle filter is a Monte Carlo algorithm that approximates the posterior distribution of the robot
+by a set of weighted particles.  Note that the “weight” (which is a terrible term) is simply the 
+probability of the particle being correct. Therefore, each particle is an estimate, and each estimate 
+has some probability of being correct.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleFilter.ParticleFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kSteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particles</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ParticleFilter.ParticleFilter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor of the Particle Filter class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> – Logging index structure (<code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code>)</p></li>
+<li><p><strong>kSteps</strong> – Number of time steps to simulate</p></li>
+<li><p><strong>robot</strong> – Simulation robot object (<code class="xref py py-class docutils literal notranslate"><span class="pre">Robot</span></code>)</p></li>
+<li><p><strong>particles</strong> – initial particles as a list of Pose objects (or at least a list of numpy arrays)</p></li>
+<li><p><strong>args</strong> – Rest of arguments to be passed to the parent constructor</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleFilter.ParticleFilter.MotionModel">
+<span class="sig-name descname"><span class="pre">MotionModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ParticleFilter.ParticleFilter.MotionModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>”
+Motion model of the Particle Filter to be overwritten by the child class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particle</strong> – particle state vector</p></li>
+<li><p><strong>uk</strong> – input vector</p></li>
+<li><p><strong>noise</strong> – sample from a noise distribution to be added to the input</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return particle</dt>
+<dd class="field-even"><p>updated particle state vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleFilter.ParticleFilter.Weight">
+<span class="sig-name descname"><span class="pre">Weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ParticleFilter.ParticleFilter.Weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weight each particle by the liklihood of the particle being correct.
+The probability the particle is correct is given by the probability that it is correct given the measurements (z).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> – measurement vector</p></li>
+<li><p><strong>R</strong> – measurement noise covariance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleFilter.ParticleFilter.Resample">
+<span class="sig-name descname"><span class="pre">Resample</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ParticleFilter.ParticleFilter.Resample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample the particles based on their weights to ensure diversity and prevent particle degeneracy.</p>
+<p>This function implements the resampling step of a particle filter algorithm. It uses the weights
+assigned to each particle to determine their likelihood of being selected. Particles with higher weights
+are more likely to be selected, while those with lower weights have a lower chance.</p>
+<p>The resampling process helps to maintain a diverse set of particles that better represents the underlying
+probability distribution of the system state.</p>
+<p>After resampling, the attributes ‘particles’ and ‘weights’ of the ParticleFilter instance are updated
+to reflect the new set of particles and their corresponding weights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleFilter.ParticleFilter.Prediction">
+<span class="sig-name descname"><span class="pre">Prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ParticleFilter.ParticleFilter.Prediction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict the next state of the system based on a given motion model.</p>
+<p>This function updates the state of each particle by predicting its next state using a motion model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> – input vector</p></li>
+<li><p><strong>Q</strong> – the covariance matrix associated with the input vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleFilter.ParticleFilter.Update">
+<span class="sig-name descname"><span class="pre">Update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ParticleFilter.ParticleFilter.Update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the particle weights based on sensor measurements and perform resampling.</p>
+<p>This function adjusts the weights of particles based on how well they match the sensor measurements.</p>
+<p>The updated weights reflect the likelihood of each particle being the true state of the system given
+the sensor measurements.</p>
+<p>After updating the weights, the function may perform resampling to ensure that particles with higher
+weights are more likely to be selected, maintaining diversity and preventing particle degeneracy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> – measurement vector</p></li>
+<li><p><strong>R</strong> – the covariance matrix associated with the measurement vector</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleFilter.ParticleFilter.get_mean_particle">
+<span class="sig-name descname"><span class="pre">get_mean_particle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ParticleFilter.ParticleFilter.get_mean_particle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the mean particle based on the current set of particles and their weights.
+:return: mean particle</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleFilter.ParticleFilter.get_best_particle">
+<span class="sig-name descname"><span class="pre">get_best_particle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ParticleFilter.ParticleFilter.get_best_particle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the best particle based on the current set of particles and their weights.
+:return: best particle</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleFilter.ParticleFilter.init_plotting">
+<span class="sig-name descname"><span class="pre">init_plotting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ParticleFilter.ParticleFilter.init_plotting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Init the plotting of the particles and the mean particle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ParticleFilter.ParticleFilter.PlotParticles">
+<span class="sig-name descname"><span class="pre">PlotParticles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ParticleFilter.ParticleFilter.PlotParticles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots all the particles and the mean particle.
+Particles are plotted as green dots, and the mean particle is plotted as a blue dot.
+Particle orientation is plotted as a green line, and the mean particle orientation is plotted as a blue line.
+Particle size is proportional to the particle weight.
+Note that the size is scaled for visualization purposes, and does not reflect the actual weight.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="montecarlo-localization">
+<h1>MonteCarlo Localization<a class="headerlink" href="#montecarlo-localization" title="Permalink to this headline">¶</a></h1>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="_images/MCLocalization.png"><img alt="MCLocalization Class Diagram" src="_images/MCLocalization.png" style="width: 249.75px; height: 791.25px;" /></a>
+<p class="caption"><span class="caption-text">MCLocalization Class Diagram.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="MCLocalization.MCLocalization">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MCLocalization.</span></span><span class="sig-name descname"><span class="pre">MCLocalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kSteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particles</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MCLocalization.MCLocalization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ParticleFilter.ParticleFilter" title="ParticleFilter.ParticleFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParticleFilter.ParticleFilter</span></code></a></p>
+<p>Monte Carlo Localization class.</p>
+<p>This class is used as “Dead Reckoning” localization using a Particle Filter.
+It implements the Prediction method from <code class="xref py py-class docutils literal notranslate"><span class="pre">ParticleFilter</span></code> and the 
+Localize and LocalizationLoop methods from <code class="xref py py-class docutils literal notranslate"><span class="pre">Localization</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="MCLocalization.MCLocalization.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kSteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particles</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MCLocalization.MCLocalization.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor.
+:param index: Named tuple used to map the state vector, the simulation vector and the observation vector (<code class="xref py py-class docutils literal notranslate"><span class="pre">prpy.IndexStruct</span></code>)
+:param kSteps: simulation time steps
+:param robot: Simulated Robot object
+:param particles: initial particles as a list of Pose objects (or at least a list of numpy arrays)
+:param args: arguments to be passed to the parent constructor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MCLocalization.MCLocalization.Prediction">
+<span class="sig-name descname"><span class="pre">Prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MCLocalization.MCLocalization.Prediction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prediction overriden from <code class="xref py py-class docutils literal notranslate"><span class="pre">ParticleFilter</span></code>.
+Note: Use the MotionModel method from <code class="xref py py-class docutils literal notranslate"><span class="pre">ParticleFilter</span></code> to update the particles to keep it generic. Then,
+child classes can overwrite the MotionModel method to implement their own motion model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MCLocalization.MCLocalization.Localize">
+<span class="sig-name descname"><span class="pre">Localize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MCLocalization.MCLocalization.Localize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Single Localization iteration. Given the previous robot pose, the function reads the inout and computes the current pose.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>xk</strong> current robot pose (we can assume the mean of the particles or the most likely particle)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MCLocalization.MCLocalization.LocalizationLoop">
+<span class="sig-name descname"><span class="pre">LocalizationLoop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usk</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MCLocalization.MCLocalization.LocalizationLoop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given an initial robot pose <span class="math notranslate nohighlight">\(x_0\)</span> and the input to the <code class="xref py py-class docutils literal notranslate"><span class="pre">SimulatedRobot</span></code> this method calls iteratively <code class="xref py py-meth docutils literal notranslate"><span class="pre">DRLocalization.Localize()</span></code> for k steps, solving the robot localization problem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x0</strong> – initial robot pose</p></li>
+<li><p><strong>usk</strong> – input vector for the simulation</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="particle-filter-map-based-localization">
+<h1>Particle Filter Map Based Localization<a class="headerlink" href="#particle-filter-map-based-localization" title="Permalink to this headline">¶</a></h1>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="_images/PFMBL.png"><img alt="PFMBL Class Diagram" src="_images/PFMBL.png" style="width: 249.75px; height: 972.0px;" /></a>
+<p class="caption"><span class="caption-text">PFMBL Class Diagram.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="PFMBLocalization.PFMBL">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PFMBLocalization.</span></span><span class="sig-name descname"><span class="pre">PFMBL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zf_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PFMBLocalization.PFMBL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#MCLocalization.MCLocalization" title="MCLocalization.MCLocalization"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCLocalization.MCLocalization</span></code></a></p>
+<p>Particle Filter Map Based Localization class.</p>
+<p>This class defines a Map Based Localization using a Particle Filter. It inherits from <code class="xref py py-class docutils literal notranslate"><span class="pre">MCLocalization</span></code>, so the Prediction step is already implemented.
+It needs to implement the Update function, and consecuently the Weight and Resample functions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PFMBLocalization.PFMBL.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zf_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#PFMBLocalization.PFMBL.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor.
+:param index: Named tuple used to map the state vector, the simulation vector and the observation vector (<code class="xref py py-class docutils literal notranslate"><span class="pre">prpy.IndexStruct</span></code>)
+:param kSteps: simulation time steps
+:param robot: Simulated Robot object
+:param particles: initial particles as a list of Pose objects (or at least a list of numpy arrays)
+:param args: arguments to be passed to the parent constructor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PFMBLocalization.PFMBL.Weight">
+<span class="sig-name descname"><span class="pre">Weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PFMBLocalization.PFMBL.Weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weight each particle by the liklihood of the particle being correct.
+The probability the particle is correct is given by the probability that it is correct given the measurements (z).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> – measurement vector</p></li>
+<li><p><strong>R</strong> – measurement noise covariance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PFMBLocalization.PFMBL.Resample">
+<span class="sig-name descname"><span class="pre">Resample</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PFMBLocalization.PFMBL.Resample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample the particles based on their weights to ensure diversity and prevent particle degeneracy.</p>
+<p>This function implements the resampling step of a particle filter algorithm. It uses the weights
+assigned to each particle to determine their likelihood of being selected. Particles with higher weights
+are more likely to be selected, while those with lower weights have a lower chance.</p>
+<p>The resampling process helps to maintain a diverse set of particles that better represents the underlying
+probability distribution of the system state.</p>
+<p>After resampling, the attributes ‘particles’ and ‘weights’ of the ParticleFilter instance are updated
+to reflect the new set of particles and their corresponding weights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PFMBLocalization.PFMBL.Update">
+<span class="sig-name descname"><span class="pre">Update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PFMBLocalization.PFMBL.Update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the particle weights based on sensor measurements and perform resampling.</p>
+<p>This function adjusts the weights of particles based on how well they match the sensor measurements.</p>
+<p>The updated weights reflect the likelihood of each particle being the true state of the system given
+the sensor measurements.</p>
+<p>After updating the weights, the function may perform resampling to ensure that particles with higher
+weights are more likely to be selected, maintaining diversity and preventing particle degeneracy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> – measurement vector</p></li>
+<li><p><strong>R</strong> – the covariance matrix associated with the measurement vector</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PFMBLocalization.PFMBL.Localize">
+<span class="sig-name descname"><span class="pre">Localize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PFMBLocalization.PFMBL.Localize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Single Localization iteration. Given the previous robot pose, the function reads the inout and computes the current pose.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>xk</strong> current robot pose (we can assume the mean of the particles or the most likely particle)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="pf-3dof-dead-reckoning">
+<h1>PF 3DOF Dead Reckoning<a class="headerlink" href="#pf-3dof-dead-reckoning" title="Permalink to this headline">¶</a></h1>
+<div class="figure align-center" id="id4">
+<a class="reference internal image-reference" href="_images/PF_3DOF_DR.png"><img alt="PF_3DOF_DR Class Diagram" src="_images/PF_3DOF_DR.png" style="width: 249.75px; height: 939.75px;" /></a>
+<p class="caption"><span class="caption-text">PF_3DOF_DR Class Diagram.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="PF_3DOF_DR.PF_3DOF_DR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PF_3DOF_DR.</span></span><span class="sig-name descname"><span class="pre">PF_3DOF_DR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PF_3DOF_DR.PF_3DOF_DR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#MCLocalization.MCLocalization" title="MCLocalization.MCLocalization"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCLocalization.MCLocalization</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PF_3DOF_DR.PF_3DOF_DR.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PF_3DOF_DR.PF_3DOF_DR.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor.
+:param index: Named tuple used to map the state vector, the simulation vector and the observation vector (<code class="xref py py-class docutils literal notranslate"><span class="pre">prpy.IndexStruct</span></code>)
+:param kSteps: simulation time steps
+:param robot: Simulated Robot object
+:param particles: initial particles as a list of Pose objects (or at least a list of numpy arrays)
+:param args: arguments to be passed to the parent constructor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PF_3DOF_DR.PF_3DOF_DR.GetInput">
+<span class="sig-name descname"><span class="pre">GetInput</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PF_3DOF_DR.PF_3DOF_DR.GetInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the input for the motion model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>uk, Qk</strong>. uk: input vector (<span class="math notranslate nohighlight">\(u_k=[n_L~n_R]^T\)</span>), Qk: covariance of the input noise</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PF_3DOF_DR.PF_3DOF_DR.MotionModel">
+<span class="sig-name descname"><span class="pre">MotionModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PF_3DOF_DR.PF_3DOF_DR.MotionModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>”
+Motion model of the Particle Filter to be overwritten by the child class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particle</strong> – particle state vector</p></li>
+<li><p><strong>uk</strong> – input vector</p></li>
+<li><p><strong>noise</strong> – sample from a noise distribution to be added to the input</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return particle</dt>
+<dd class="field-even"><p>updated particle state vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="pf-3dof-map-based-localization">
+<h1>PF 3DOF Map Based Localization<a class="headerlink" href="#pf-3dof-map-based-localization" title="Permalink to this headline">¶</a></h1>
+<div class="figure align-center" id="id5">
+<a class="reference internal image-reference" href="_images/PF_3DOF_MBL.png"><img alt="PF_3DOF_MBL Class Diagram" src="_images/PF_3DOF_MBL.png" style="width: 249.75px; height: 1134.75px;" /></a>
+<p class="caption"><span class="caption-text">PF_3DOF_MBL Class Diagram.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="PF_3DOF_MBL.PF_3DOF_MBL">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">PF_3DOF_MBL.</span></span><span class="sig-name descname"><span class="pre">PF_3DOF_MBL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PF_3DOF_MBL.PF_3DOF_MBL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PFMBLocalization.PFMBL" title="PFMBLocalization.PFMBL"><code class="xref py py-class docutils literal notranslate"><span class="pre">PFMBLocalization.PFMBL</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="PF_3DOF_MBL.PF_3DOF_MBL.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PF_3DOF_MBL.PF_3DOF_MBL.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor.
+:param index: Named tuple used to map the state vector, the simulation vector and the observation vector (<code class="xref py py-class docutils literal notranslate"><span class="pre">prpy.IndexStruct</span></code>)
+:param kSteps: simulation time steps
+:param robot: Simulated Robot object
+:param particles: initial particles as a list of Pose objects (or at least a list of numpy arrays)
+:param args: arguments to be passed to the parent constructor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PF_3DOF_MBL.PF_3DOF_MBL.GetInput">
+<span class="sig-name descname"><span class="pre">GetInput</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PF_3DOF_MBL.PF_3DOF_MBL.GetInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the input for the motion model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>uk, Qk</strong>. uk: input vector (<span class="math notranslate nohighlight">\(u_k=[n_L~n_R]^T\)</span>), Qk: covariance of the input noise</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PF_3DOF_MBL.PF_3DOF_MBL.GetMeasurements">
+<span class="sig-name descname"><span class="pre">GetMeasurements</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PF_3DOF_MBL.PF_3DOF_MBL.GetMeasurements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the measurements from the robot. Returns a vector of range distances to the map features.
+Only those features that are within the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SimulatedRobot.SimulatedRobot.Distance_max_range</span></code> of the sensor are returned.
+The measurements arribe at a frequency defined in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">SimulatedRobot.SimulatedRobot.Distance_feature_reading_frequency</span></code> attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>vector of distances to the map features, covariance of the measurement noise</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="PF_3DOF_MBL.PF_3DOF_MBL.MotionModel">
+<span class="sig-name descname"><span class="pre">MotionModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PF_3DOF_MBL.PF_3DOF_MBL.MotionModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>”
+Motion model of the Particle Filter to be overwritten by the child class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particle</strong> – particle state vector</p></li>
+<li><p><strong>uk</strong> – input vector</p></li>
+<li><p><strong>noise</strong> – sample from a noise distribution to be added to the input</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return particle</dt>
+<dd class="field-even"><p>updated particle state vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Particle Filter</a></li>
+<li><a class="reference internal" href="#montecarlo-localization">MonteCarlo Localization</a></li>
+<li><a class="reference internal" href="#particle-filter-map-based-localization">Particle Filter Map Based Localization</a></li>
+<li><a class="reference internal" href="#pf-3dof-dead-reckoning">PF 3DOF Dead Reckoning</a></li>
+<li><a class="reference internal" href="#pf-3dof-map-based-localization">PF 3DOF Map Based Localization</a></li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="DRLocalization.html"
+                          title="previous chapter">3 DOF Differential Drive Mobile Robot Example</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/particle_filter.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="DRLocalization.html" title="3 DOF Differential Drive Mobile Robot Example"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">prpy: Probabilistic Robot Localization Python Library 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Particle Filter</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Pere Ridao.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

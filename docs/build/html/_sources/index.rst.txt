@@ -19,6 +19,7 @@ API:
    compounding
    robot_simulation
    Localization_index
+   particle_filter
 
 .. autosummary::
    :toctree: generated

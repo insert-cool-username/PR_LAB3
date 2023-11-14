@@ -14,9 +14,11 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Particle Filter" href="particle_filter.html" />
     <link rel="prev" title="Robot Localization" href="Localization.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -25,6 +27,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="particle_filter.html" title="Particle Filter"
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="Localization.html" title="Robot Localization"
              accesskey="P">previous</a> |</li>
@@ -42,8 +47,54 @@
   <div class="section" id="dof-differential-drive-mobile-robot-example">
 <h1>3 DOF Differential Drive Mobile Robot Example<a class="headerlink" href="#dof-differential-drive-mobile-robot-example" title="Permalink to this headline">¶</a></h1>
 <div class="figure align-center">
-<a class="reference internal image-reference" href="../../pyreverse_output/DR_3DOFDifferentialDrive.png"><img alt="DR_3DOFDifferentialDrive Class Diagram" src="../../pyreverse_output/DR_3DOFDifferentialDrive.png" /></a>
+<a class="reference internal image-reference" href="_images/DR_3DOFDifferentialDrive.png"><img alt="DR_3DOFDifferentialDrive Class Diagram" src="_images/DR_3DOFDifferentialDrive.png" style="width: 333.75px; height: 464.25px;" /></a>
 </div>
+<dl class="py class">
+<dt class="sig sig-object py" id="DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">DR_3DOFDifferentialDrive.</span></span><span class="sig-name descname"><span class="pre">DR_3DOFDifferentialDrive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kSteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="Localization.html#Localization.Localization" title="Localization.Localization"><code class="xref py py-class docutils literal notranslate"><span class="pre">Localization.Localization</span></code></a></p>
+<p>Dead Reckoning Localization for a Differential Drive Mobile Robot.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kSteps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor of the <code class="xref py py-class docutils literal notranslate"><span class="pre">prlab.DR_3DOFDifferentialDrive</span></code> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – Rest of arguments to be passed to the parent constructor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.Localize">
+<span class="sig-name descname"><span class="pre">Localize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xk_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uk</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.Localize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Motion model for the 3DOF (<span class="math notranslate nohighlight">\(x_k=[x_{k}~y_{k}~\psi_{k}]^T\)</span>) Differential Drive Mobile robot using as input the readings of the wheel encoders (<span class="math notranslate nohighlight">\(u_k=[n_L~n_R]^T\)</span>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xk_1</strong> – previous robot pose estimate (<span class="math notranslate nohighlight">\(x_{k-1}=[x_{k-1}~y_{k-1}~\psi_{k-1}]^T\)</span>)</p></li>
+<li><p><strong>uk</strong> – input vector (<span class="math notranslate nohighlight">\(u_k=[u_{k}~v_{k}~w_{k}~r_{k}]^T\)</span>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return xk</dt>
+<dd class="field-even"><p>current robot pose estimate (<span class="math notranslate nohighlight">\(x_k=[x_{k}~y_{k}~\psi_{k}]^T\)</span>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.GetInput">
+<span class="sig-name descname"><span class="pre">GetInput</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DR_3DOFDifferentialDrive.DR_3DOFDifferentialDrive.GetInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the input for the motion model. In this case, the input is the readings from both wheel encoders.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>uk:  input vector (<span class="math notranslate nohighlight">\(u_k=[n_L~n_R]^T\)</span>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -57,6 +108,11 @@
     <h4>Previous topic</h4>
     <p class="topless"><a href="Localization.html"
                           title="previous chapter">Robot Localization</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="particle_filter.html"
+                          title="next chapter">Particle Filter</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -85,6 +141,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="particle_filter.html" title="Particle Filter"
+             >next</a> |</li>
         <li class="right" >
           <a href="Localization.html" title="Robot Localization"
              >previous</a> |</li>
