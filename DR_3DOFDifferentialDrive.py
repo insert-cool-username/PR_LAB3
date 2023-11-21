@@ -60,7 +60,7 @@ class DR_3DOFDifferentialDrive(Localization):
         """
 
         # TODO: to be completed by the student
-        ue = self.robot.ReadEncoders()
+        ue, rsk = self.robot.ReadEncoders()
         
-        return ue
+        return ue , rsk
 

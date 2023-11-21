@@ -183,7 +183,7 @@ class DifferentialDriveSimulatedRobot(SimulatedRobot):
 
         zsk = np.array([(V_L*self.dt)*(self.pulse_x_wheelTurns/p),(V_R*self.dt)*(self.pulse_x_wheelTurns/p)]).T
 
-        return np.floor(zsk + rsk)
+        return zsk + rsk , rsk
     
     def ReadCompass(self):
         """ Simulates the compass reading of the robot.

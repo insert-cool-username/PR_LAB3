@@ -30,7 +30,16 @@ class MCLocalization(ParticleFilter):
         Note: Use the MotionModel method from :class:`ParticleFilter` to update the particles to keep it generic. Then,
         child classes can overwrite the MotionModel method to implement their own motion model.
         """
-        # **To be completed by the student**.
+        
+        #Mando cada particula al MM
+  
+        num_columns = self.particles.shape[1]
+
+        for i in range(num_columns):
+            #sample noise from Q, is a covariance matrix
+            noise = np.random.multivariate_normal(0 , Q, size=(3,1))
+
+            self.MotionModel(self.particles[:,i],u,noise)
 
     def Localize(self):
         """
