@@ -1,4 +1,5 @@
 from Localization import *
+from Pose3D import * # I added it due to line 76
 import numpy as np
 
 class DR_3DOFDifferentialDrive(Localization):
@@ -28,14 +29,28 @@ class DR_3DOFDifferentialDrive(Localization):
         :parameter uk: input vector (:math:`u_k=[u_{k}~v_{k}~w_{k}~r_{k}]^T`)
         :return xk: current robot pose estimate (:math:`x_k=[x_{k}~y_{k}~\psi_{k}]^T`)
         """
-
-        # Store previous state and input for Logging purposes
+# Store previous state and input for Logging purposes
         self.etak_1 = xk_1  # store previous state
         self.uk = uk  # store input
 
-        # TODO: to be completed by the student
+        #Obtenemos el desplazamiento en cada rueda
+        d_l = uk[1]*(1/self.robot.pulse_x_wheelTurns)*(2*np.pi)*(self.wheelRadius)
+        d_r = uk[0]*(1/self.robot.pulse_x_wheelTurns)*(2*np.pi)*(self.wheelRadius)
 
-        pass
+        #Obtenemos el desplazamiento del robot
+        d = (d_r+d_l)/2
+        delta_theta = (d_r - d_l)/self.wheelBase
+        theta_k = xk_1[2] + delta_theta
+        x_k = xk_1[0] + (d*np.cos(theta_k))
+        y_k = xk_1[1] + (d*np.sin(theta_k))
+
+        
+        etak = np.array([x_k,y_k,theta_k])
+
+
+        self.xk = self.xk_1.oplus(etak)
+
+        return self.xk
 
     def GetInput(self):
         """
@@ -45,6 +60,7 @@ class DR_3DOFDifferentialDrive(Localization):
         """
 
         # TODO: to be completed by the student
-
-        pass
+        ue = self.robot.ReadEncoders()
+        
+        return ue
 

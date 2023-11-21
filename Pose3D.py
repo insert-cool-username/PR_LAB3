@@ -44,9 +44,12 @@ class Pose3D(np.ndarray):
         :returns: C-Frame pose expressed in A-Frame coordinates
         """
 
-        # TODO: to be completed by the student
+        AxC = np.array([[AxB[0,0] + BxC[0,0]*cos(AxB[2,0]) - BxC[1,0]*sin(AxB[2,0])],
+                        [AxB[1,0] + BxC[0,0]*sin(AxB[2,0]) + BxC[1,0]*cos(AxB[2,0])],
+                        [AxB[2,0] + BxC[2,0]]
+                       ])
+        return Pose3D(AxC)
 
-        pass
 
     def ominus(AxB):
         """
@@ -64,7 +67,11 @@ class Pose3D(np.ndarray):
         :returns: A-Frame pose expressed in B-Frame coordinates (eq. :eq:`eq-ominus3dof`)
         """
 
-        # TODO: to be completed by the student
+        BxA = np.array([[-AxB[0,0]*cos(AxB[2,0]) - AxB[1,0]*sin(AxB[2,0])],
+                        [AxB[0,0]*sin(AxB[2,0]) - AxB[1,0]*cos(AxB[2,0])],
+                        [-AxB[2,0]]
+                       ])
+        return Pose3D(BxA)
 
-        pass
+        
 
