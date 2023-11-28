@@ -173,7 +173,7 @@ class DifferentialDriveSimulatedRobot(SimulatedRobot):
 
         noise = 10
 
-        vx , vy , r = self.xsk[3][0], self.xsk[4][0], self.xsk[5][0]
+        vx , vy , r = self.robot.xsk[3][0], self.robot.xsk[4][0], self.robot.xsk[5][0]
         V = np.sqrt(vx**2 + vy**2)
         V_R = V-(r*self.wheelBase/2)
         V_L = V+(r*self.wheelBase/2)
@@ -181,7 +181,7 @@ class DifferentialDriveSimulatedRobot(SimulatedRobot):
         rsk = np.array(np.random.normal(0, noise, 2)).T
 
 
-        zsk = np.array([(V_L*self.dt)*(self.pulse_x_wheelTurns/p),(V_R*self.dt)*(self.pulse_x_wheelTurns/p)]).T
+        zsk = np.array([(V_L*self.dt)*(self.robot.pulse_x_wheelTurns/p),(V_R*self.dt)*(self.robot.pulse_x_wheelTurns/p)]).T
 
         return zsk + rsk , rsk
     
@@ -202,15 +202,18 @@ class DifferentialDriveSimulatedRobot(SimulatedRobot):
         """ Simulates reading the distances to the features in the environment.
         Returns a list of (feature position, distance to feature) tuples
         """
-        features_and_distances = []
+        distances = []
+        Q = 10
         for f in self.M:
             actual_distance = np.linalg.norm(self.xsk[:2] - f)
             if actual_distance > self.xy_max_range:
             # Outside range, ignore feature
                 continue
             
-            features_and_distances.append((f, actual_distance))
-        return features_and_distances
+            distances.append([(f, actual_distance)])
+
+        #print(self.xsk[:2])
+        return distances , Q
 
 
     def PlotRobot(self):

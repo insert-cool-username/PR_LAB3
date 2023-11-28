@@ -175,7 +175,7 @@ class ParticleFilter(Localization):
         Note that the size is scaled for visualization purposes, and does not reflect the actual weight.
         """
         # update particles
-        K_size = 200 # increase the size of the particles for visualization
+        K_size = 100 # increase the size of the particles for visualization
         K_len = 40 # increase the length of the particle vector (orientation) for visualization
         for i in range(len(self.particles)):
             self.plt_particles[i].set_data(self.particles[i][self.x_idx], self.particles[i][self.y_idx])

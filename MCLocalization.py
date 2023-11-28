@@ -32,14 +32,16 @@ class MCLocalization(ParticleFilter):
         """
         
         #Mando cada particula al MM
+        #print("I was called")
   
-        num_columns = self.particles.shape[1]
+        num_columns = len(self.particles)
 
-        for i in range(num_columns):
+        for i in range(1,num_columns):
             #sample noise from Q, is a covariance matrix
-            noise = np.random.multivariate_normal(0 , Q, size=(3,1))
-
-            self.MotionModel(self.particles[:,i],u,noise)
+            zero = np.zeros((3,))
+            
+            noise = np.random.normal(zero , Q)
+            self.particles[i] = self.MotionModel(self.particles[i],u,noise)
 
     def Localize(self):
         """
